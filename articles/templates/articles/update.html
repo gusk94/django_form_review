@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}
+Article::Update
+{% endblock title %}
+
+{% block container %}
+<a href="{% url 'articles:index' %}">[back]</a>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">[update]</button>
+</form>
+{% endblock container %}
