@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST, require_GET
-from .forms import ArticleForm
-from .models import Article
+from .forms import ArticleForm, CommentForm
+from .models import Article, Comment
 # from IPython import embed
 
 @require_GET
@@ -33,7 +33,9 @@ def create(request):
 def detail(request, article_pk):
     # 사용자가 url 에 적어보낸 article pk 를 통해서 디테일 페이지를 보여준다.
     article = get_object_or_404(Article, pk=article_pk)
-    context = {'article': article}
+    comments = article.comments.all()
+    form = CommentForm()
+    context = {'article': article, 'comments': comments, 'form': form}
     return render(request, 'articles/detail.html', context)
 
 
@@ -55,3 +57,29 @@ def delete(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
     article.delete()
     return redirect('articles:index')
+
+
+@require_POST
+def commentcreate(request, article_pk):
+    if request.method == 'POST':
+        # article = get_object_or_404(Article, pk=article_pk)
+        # content = request.POST.get('content') # name
+        # comment = Comment()
+        # comment.article = article
+        # comment.content = content
+        # comment.save()
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # article을 기본 form으로 받지 않고 exclude 했을 경우 article_id 를 따로 저장해줌
+            # comment = form.save(commit=False)
+            # commnet.article_id = article_pk
+            # comment.save()
+    return redirect('articles:detail', article_pk)
+
+
+@require_POST
+def commentdelete(reqeust, article_pk, comment_pk):
+    comment = get_object_or_404(Comment, pk=comment_pk)
+    comment.delete()
+    return redirect('articles:detail', article_pk)

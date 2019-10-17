@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-z{% block title %}
+{% block title %}
 Article::Create
 {% endblock title %}
 
@@ -8,6 +8,6 @@ Article::Create
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
-    <button type="submit">[create]</button>
+    <button type="submit">create</button>
 </form>
 {% endblock container %}
