@@ -15,4 +15,4 @@ class CommentForm(forms.ModelForm):
         # 리스트로 받고 싶은것만 받기 가능
         fields = '__all__'
         # 제외
-        # exclude = ['article', ]
+        exclude = ['article', ]

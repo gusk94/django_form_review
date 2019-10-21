@@ -5,6 +5,9 @@ Article::Create
 {% endblock title %}
 
 {% block container %}
+<form action="{% url 'articles:index' %}">
+  <button type="submit">Back</button>
+</form>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}

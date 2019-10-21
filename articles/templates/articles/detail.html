@@ -10,35 +10,41 @@ Article::Detail
 <hr>
 <p>{{ article.content }}</p>
 <hr>
+{% if request.user.is_authenticated %}
+  <form action="{% url 'articles:update' article.pk %}">
+    {% csrf_token %}
+    <button type="submit">update</button>
+  </form>
+  <form action="{% url 'articles:delete' article.pk %}" method="POST">
+    {% csrf_token %}
+    <button type="submit">delete</button>
+  </form>
+{% endif %}
 <h4>Comments</h4>
-<form action="{% url 'articles:commentcreate' article.pk %}" method="POST">
-  {% csrf_token %}
-  {{ form.as_p }}
-  {% comment %} <input type="text" name="content"> {% endcomment %}
-  <button type="submit">create</button>
-</form>
+{% if request.user.is_authenticated %}
+  <form action="{% url 'articles:commentcreate' article.pk %}" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% comment %} <input type="text" name="content"> {% endcomment %}
+    <button type="submit">create</button>
+  </form>
+{% endif %}
 <ul>
   {% for comment in comments %}
     <li>
       {{ comment.content }}
-      <form action="{% url 'articles:commentdelete' article.pk comment.pk %}" method="POST">
-        {% csrf_token %}
-        <button type="submit">delete</button>
-      </form>
+      {% if request.user.is_authenticated %}
+        <form action="{% url 'articles:commentdelete' article.pk comment.pk %}" method="POST">
+          {% csrf_token %}
+          <button type="submit">delete</button>
+        </form>
+      {% endif %}
     </li>
     {% empty %}
       <p>no comment</p>
   {% endfor %}
 </ul>
 <hr>
-<form action="{% url 'articles:update' article.pk %}">
-  {% csrf_token %}
-  <button type="submit">update</button>
-</form>
-<form action="{% url 'articles:delete' article.pk %}" method="POST">
-  {% csrf_token %}
-  <button type="submit">delete</button>
-</form>
 <form action="{% url 'articles:index' %}">
   {% csrf_token %}
   <button type="submit">back</button>

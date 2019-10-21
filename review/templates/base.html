@@ -1,21 +1,38 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-reboot.min.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-grid.min.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <title>{% block title %}{% endblock title %}</title>
 </head>
 <body>
     <header>
       <h1>Welcome!</h1>
-      <p>
-        <a href="{% url 'accounts:login' %}">login</a><br>
-        <span>Hello, {{ user.username }}</span><br>
-        <a href="{% url 'accounts:logout' %}">logout</a>
-      </p>
+      {% if user.is_authenticated %}
+        <p>
+          <span>Hello, {{ user.username }}</span>
+          <a href="{% url 'accounts:logout' %}">logout</a>
+          <form action="{% url 'accounts:delete' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">회원탈퇴</button>
+          </form>
+        </p>
+      {% else %}
+        <p>
+          <a href="{% url 'accounts:login' %}">login</a>
+          <a href="{% url 'accounts:signup' %}">signup</a>
+        </p>
+      {% endif %}
     </header>
     {% block container %}
     {% endblock container %}
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    {% comment %} <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script> {% endcomment %}
 </body>
 </html>
