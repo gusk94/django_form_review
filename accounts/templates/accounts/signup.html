@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Accounts::Signup
+{% endblock title %}
+
+{% block container %}
+<form action="{% url 'articles:index' %}">
+<button type="submit">back</button>
+</form>
+<h2>sign up</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">submit</button>
+</form>
+{% endblock container %}

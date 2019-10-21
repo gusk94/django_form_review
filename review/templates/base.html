@@ -9,6 +9,11 @@
 <body>
     <header>
       <h1>Welcome!</h1>
+      <p>
+        <a href="{% url 'accounts:login' %}">login</a><br>
+        <span>Hello, {{ user.username }}</span><br>
+        <a href="{% url 'accounts:logout' %}">logout</a>
+      </p>
     </header>
     {% block container %}
     {% endblock container %}
