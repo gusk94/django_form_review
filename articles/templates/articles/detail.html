@@ -7,10 +7,20 @@ Article::Detail
 {% block container %}
 <h2>{{ article.title }}</h2>
 <p>{{ article.create_at }}</p>
+<p>user: {{ article.user }}</p>
+<a href="{% url 'articles:like' article.pk %}">
+  {% if user in article.liked_users.all %}
+    <i class="fas fa-heart fa-lg" style="color: red"></i>
+  {% else %}
+    <i class="far fa-heart fa-lg" style="color: red"></i>
+  {% endif %}
+</a>
+<span>{{ article.liked_users.all | length }} people like this article.</span>
 <hr>
 <p>{{ article.content }}</p>
 <hr>
-{% if request.user.is_authenticated %}
+{% comment %} {% if request.user.is_authenticated %} {% endcomment %}
+{% if article.user == request.user %}
   <form action="{% url 'articles:update' article.pk %}">
     {% csrf_token %}
     <button type="submit">update</button>
@@ -21,7 +31,7 @@ Article::Detail
   </form>
 {% endif %}
 <h4>Comments</h4>
-{% if request.user.is_authenticated %}
+{% if request.user == comment.user %}
   <form action="{% url 'articles:commentcreate' article.pk %}" method="POST">
     {% csrf_token %}
     {{ form.as_p }}
@@ -32,11 +42,11 @@ Article::Detail
 <ul>
   {% for comment in comments %}
     <li>
-      {{ comment.content }}
-      {% if request.user.is_authenticated %}
+      <span>{{ comment.content }} - {{ comment.created_at }} / {{ comment.user }}</span>
+      {% if request.user == comment.user %}
         <form action="{% url 'articles:commentdelete' article.pk comment.pk %}" method="POST">
           {% csrf_token %}
-          <button type="submit">delete</button>
+          <button class="btn btn-danger" type="submit">delete</button>
         </form>
       {% endif %}
     </li>
@@ -45,8 +55,7 @@ Article::Detail
   {% endfor %}
 </ul>
 <hr>
-<form action="{% url 'articles:index' %}">
-  {% csrf_token %}
-  <button type="submit">back</button>
-</form>
-{% endblock container %}
+
+{% include 'articles/_follow.html' %}
+
+{% endblock container %}  

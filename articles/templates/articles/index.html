@@ -18,6 +18,7 @@ Article::Index
 {% for article in articles %}
 <div>
   <h3>{{ article.pk }}.{{ article.title }}</h3>
+  <p>user: {{ article.user }}</p>
   <a href="{% url 'articles:detail' article.pk %}">[more...]</a>
 </div>
 <br>
