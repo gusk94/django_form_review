@@ -8,14 +8,15 @@ Article::Detail
 <h2>{{ article.title }}</h2>
 <p>{{ article.create_at }}</p>
 <p>user: {{ article.user }}</p>
-<a href="{% url 'articles:like' article.pk %}">
-  {% if user in article.liked_users.all %}
-    <i class="fas fa-heart fa-lg" style="color: red"></i>
-  {% else %}
-    <i class="far fa-heart fa-lg" style="color: red"></i>
-  {% endif %}
-</a>
-<span>{{ article.liked_users.all | length }} people like this article.</span>
+<p>
+<i
+  class="{% if user in article.liked_users.all %}fas{% else %}far{% endif %} fa-heart fa-lg"
+  id="like-btn"
+  data-id="{{ article.pk }}"
+  style="color: red">
+</i>
+<span id="like-count">{{ article.liked_users.all | length }}</span> people like this article.
+</p>
 <hr>
 <p>{{ article.content }}</p>
 <hr>
@@ -58,4 +59,24 @@ Article::Detail
 
 {% include 'articles/_follow.html' %}
 
+<script>
+  const likeBtn  = document.querySelector('#like-btn')
+  likeBtn.addEventListener('click', function(event){
+    // Button 의 data-id 속성을 아래 코드로 가지고 온다.
+    const articleId = event.target.dataset.id
+    axios.get(`/articles/${articleId}/like/`)
+      .then(function(response){
+        if (response.data.liked){
+          likeBtn.classList.remove('far')
+          likeBtn.classList.add('fas')
+        } else {
+          likeBtn.classList.remove('fas')
+          likeBtn.classList.add('far')
+        }
+
+        const likeCount = document.querySelector('#like-count')
+        likeCount.innerText = response.data.count
+      })
+  })
+</script>
 {% endblock container %}  

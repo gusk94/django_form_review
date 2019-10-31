@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST, require_GET
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from .forms import ArticleForm, CommentForm
 from .models import Article, Comment
 # from IPython import embed
@@ -116,10 +116,17 @@ def like(request, article_pk):
     if article.liked_users.filter(pk=user.pk).exists(): # 1개의 데이터라도 존재하면 True
     # if user in article.liked_users.all():
         user.liked_articles.remove(article)
+        liked = False
     else:
         user.liked_articles.add(article)
+        liked = True
 
-    return redirect('articles:detail', article_pk)
+    context = {
+        'liked': liked, 
+        'count': article.liked_users.count()        
+    }
+
+    return JsonResponse(context)
 
 
 @login_required
